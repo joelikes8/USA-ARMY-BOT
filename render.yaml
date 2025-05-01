@@ -1,5 +1,5 @@
 services:
-  # Discord Bot Service
+  # Discord Bot Service (Worker type - no port needed)
   - type: worker
     name: usa-army-discord-bot
     env: python
@@ -15,15 +15,13 @@ services:
         fromDatabase:
           name: usa-army-bot-db
           property: connectionString
-      - key: WORKER_MODE
-        value: "true"
 
-  # Web Dashboard Service
+  # Web Dashboard Service (Web type - requires port)
   - type: web
     name: usa-army-dashboard
     env: python
     buildCommand: bash render_build.sh
-    startCommand: gunicorn wsgi:app
+    startCommand: gunicorn wsgi:app --bind=0.0.0.0:$PORT
     plan: starter
     envVars:
       - key: DATABASE_URL
@@ -32,8 +30,8 @@ services:
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
-      - key: PYTHON_VERSION
-        value: "3.11.0"
+      - key: PORT
+        value: 10000
     healthCheckPath: /
 
 # Database for the bot and web dashboard
