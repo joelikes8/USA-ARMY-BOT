@@ -15,6 +15,8 @@ services:
         fromDatabase:
           name: usa-army-bot-db
           property: connectionString
+      - key: RENDER_DISCOVERY_SERVICE
+        value: "worker-only"
 
   # Web Dashboard Service
   - type: web
@@ -32,6 +34,10 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
+      - key: RENDER_DISCOVERY_SERVICE
+        value: "disableDetection"
+      - key: NO_PORT_DETECTION
+        value: "true"
     healthCheckPath: /
 
 # Database for the bot and web dashboard
