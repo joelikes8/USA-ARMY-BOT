@@ -1,0 +1,39 @@
+services:
+  # Discord Bot Service
+  - type: worker
+    name: usa-army-discord-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    plan: starter
+    envVars:
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: ROBLOX_COOKIE
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: usa-army-bot-db
+          property: connectionString
+
+  # Web Dashboard Service
+  - type: web
+    name: usa-army-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: usa-army-bot-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+    healthCheckPath: /
+
+# Database for the bot and web dashboard
+databases:
+  - name: usa-army-bot-db
+    plan: starter
+    databaseName: usa_army_bot
