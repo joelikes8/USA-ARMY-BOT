@@ -237,17 +237,11 @@ class VerificationCommands(commands.Cog):
             logger.error(f"Error in verify command: {e}")
             await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
     
-    @app_commands.command(
-        name="reverify",
-        description="Change your verified Roblox account"
-    )
-    @app_commands.describe(
-        roblox_username="Your new Roblox username"
-    )
-    async def reverify(self, interaction: discord.Interaction, roblox_username: str):
+    @app_commands.command(name="reverify", description="Change your verified Roblox account")
+    @app_commands.describe(roblox_username="Your new Roblox username")
+    async def reverify_command(self, interaction: discord.Interaction, roblox_username: str):
         """Change your verified Roblox account."""
-        print(f"REVERIFY CALLED - USER: {interaction.user.name}, USERNAME: {roblox_username}")
-        logger.info(f"Reverify called - User: {interaction.user.name}, Username: {roblox_username}")
+        logger.info(f"REVERIFY COMMAND CALLED - USER: {interaction.user.name}, USERNAME: {roblox_username}")
         
         await interaction.response.defer(ephemeral=True)
         
@@ -256,9 +250,7 @@ class VerificationCommands(commands.Cog):
             session = get_session()
             session.query(RobloxVerification).filter_by(discord_id=str(interaction.user.id)).delete()
             session.commit()
-            session.close()
             
-            # Instead of calling self.verify directly, implement the same logic here
             # Generate a verification code
             verification_code = generate_verification_code()
             
@@ -271,15 +263,17 @@ class VerificationCommands(commands.Cog):
                         "Please check the spelling and try again.",
                         ephemeral=True
                     )
+                    session.close()
                     return
                 roblox_id = str(roblox_user.id)
+                logger.info(f"Found Roblox user: {roblox_username} with ID {roblox_id}")
             except Exception as roblox_error:
                 logger.error(f"Error checking Roblox user: {roblox_error}")
                 # Fallback to a placeholder ID that will be updated during verification
                 roblox_id = "0" 
+                logger.info(f"Using placeholder ID for {roblox_username}")
             
             # Create new verification entry
-            session = get_session()
             new_verification = RobloxVerification(
                 discord_id=str(interaction.user.id),
                 discord_name=interaction.user.name,
@@ -290,6 +284,7 @@ class VerificationCommands(commands.Cog):
             session.add(new_verification)
             session.commit()
             session.close()
+            logger.info(f"Created verification entry for {interaction.user.name} with code {verification_code}")
             
             # Create an embed with verification instructions
             embed = discord.Embed(
