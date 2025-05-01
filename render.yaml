@@ -21,7 +21,7 @@ services:
     name: usa-army-dashboard
     env: python
     buildCommand: pip install -r requirements_for_render.txt
-    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT
+    startCommand: gunicorn main:app --bind=0.0.0.0:$PORT --access-logfile=-
     plan: starter
     envVars:
       - key: DATABASE_URL
@@ -30,6 +30,8 @@ services:
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
+      - key: PORT
+        value: 10000
     healthCheckPath: /
 
 # Database for the bot and web dashboard
