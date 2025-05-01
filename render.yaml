@@ -21,7 +21,7 @@ services:
     name: usa-army-dashboard
     env: python
     buildCommand: pip install -r requirements_for_render.txt
-    startCommand: gunicorn wsgi:app
+    # Use the Procfile which defines web process
     plan: starter
     envVars:
       - key: DATABASE_URL
