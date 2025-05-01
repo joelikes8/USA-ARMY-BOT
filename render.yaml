@@ -23,7 +23,7 @@ services:
     name: usa-army-dashboard
     env: python
     buildCommand: bash render_build.sh
-    startCommand: gunicorn wsgi:app --bind=0.0.0.0:$PORT --log-level debug
+    startCommand: gunicorn wsgi:app
     plan: starter
     envVars:
       - key: DATABASE_URL
@@ -32,10 +32,6 @@ services:
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
-      - key: PORT
-        value: 10000
-      - key: WEB_SERVICE_MODE
-        value: "dashboard"
       - key: PYTHON_VERSION
         value: "3.11.0"
     healthCheckPath: /
