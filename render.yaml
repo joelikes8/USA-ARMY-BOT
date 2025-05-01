@@ -22,8 +22,8 @@ services:
   - type: web
     name: usa-army-dashboard
     env: python
-    buildCommand: pip install -r requirements_for_render.txt
-    startCommand: gunicorn wsgi:app --log-level debug --bind=0.0.0.0:$PORT
+    buildCommand: bash render_build.sh
+    startCommand: gunicorn wsgi:app --bind=0.0.0.0:$PORT --log-level debug
     plan: starter
     envVars:
       - key: DATABASE_URL
@@ -38,6 +38,8 @@ services:
         value: "disableDetection"
       - key: NO_PORT_DETECTION
         value: "true"
+      - key: PYTHON_VERSION
+        value: "3.11.0"
     healthCheckPath: /
 
 # Database for the bot and web dashboard
