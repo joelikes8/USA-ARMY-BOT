@@ -246,6 +246,9 @@ class VerificationCommands(commands.Cog):
     )
     async def reverify(self, interaction: discord.Interaction, roblox_username: str):
         """Change your verified Roblox account."""
+        print(f"REVERIFY CALLED - USER: {interaction.user.name}, USERNAME: {roblox_username}")
+        logger.info(f"Reverify called - User: {interaction.user.name}, Username: {roblox_username}")
+        
         await interaction.response.defer(ephemeral=True)
         
         try:
