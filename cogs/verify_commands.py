@@ -255,8 +255,76 @@ class VerificationCommands(commands.Cog):
             session.commit()
             session.close()
             
-            # Run the regular verification process
-            await self.verify(interaction, roblox_username)
+            # Instead of calling self.verify directly, implement the same logic here
+            # Generate a verification code
+            verification_code = generate_verification_code()
+            
+            # Try to find the Roblox user
+            try:
+                roblox_user = await roblox_client.get_user_by_username(roblox_username)
+                if not roblox_user:
+                    await interaction.followup.send(
+                        f"Could not find a Roblox user with the username '{roblox_username}'. " +
+                        "Please check the spelling and try again.",
+                        ephemeral=True
+                    )
+                    return
+                roblox_id = str(roblox_user.id)
+            except Exception as roblox_error:
+                logger.error(f"Error checking Roblox user: {roblox_error}")
+                # Fallback to a placeholder ID that will be updated during verification
+                roblox_id = "0" 
+            
+            # Create new verification entry
+            session = get_session()
+            new_verification = RobloxVerification(
+                discord_id=str(interaction.user.id),
+                discord_name=interaction.user.name,
+                roblox_username=roblox_username,
+                roblox_id=roblox_id,
+                verification_code=verification_code
+            )
+            session.add(new_verification)
+            session.commit()
+            session.close()
+            
+            # Create an embed with verification instructions
+            embed = discord.Embed(
+                title="Roblox Verification",
+                description=f"Please follow these steps to verify your Roblox account:",
+                color=discord.Color.blue()
+            )
+            
+            embed.add_field(
+                name="Step 1",
+                value=f"Go to your [Roblox Profile](https://www.roblox.com/users/{roblox_id}/profile)",
+                inline=False
+            )
+            
+            embed.add_field(
+                name="Step 2",
+                value="Click on the pencil icon next to your description to edit it",
+                inline=False
+            )
+            
+            embed.add_field(
+                name="Step 3",
+                value=f"Add this code to your profile description: `{verification_code}`\n" +
+                      "(You can remove it after verification is complete)",
+                inline=False
+            )
+            
+            embed.add_field(
+                name="Step 4",
+                value="After adding the code, run `/check` to complete the verification",
+                inline=False
+            )
+            
+            embed.set_footer(text="Verification code will expire after 24 hours")
+            
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            
+            logger.info(f"User {interaction.user.name} ({interaction.user.id}) started reverification for Roblox account {roblox_username}")
             
         except Exception as e:
             logger.error(f"Error in reverify command: {e}")
