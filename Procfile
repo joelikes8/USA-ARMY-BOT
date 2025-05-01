@@ -1,2 +1,2 @@
-web: gunicorn main:app
+web: gunicorn wsgi:app --log-level debug
 worker: python main.py
