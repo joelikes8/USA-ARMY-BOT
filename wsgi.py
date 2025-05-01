@@ -12,11 +12,14 @@ logging.basicConfig(
     ]
 )
 
-# Simplify the approach for Render
+# Get the port from Render's environment
 port = int(os.environ.get("PORT", 10000))
-logging.info(f"USA Army Dashboard ready on port {port}")
 
-# Make this file available for Gunicorn
+# Log the port binding explicitly for Render to detect
+print(f"RENDER PORT DETECTION: Web server will bind to PORT={port}", file=sys.stderr)
+logging.info(f"USA Army Dashboard starting on port {port}")
+
+# For running directly (not through gunicorn)
 if __name__ == "__main__":
-    # Run the app directly when executed
+    # Run the app directly
     app.run(host='0.0.0.0', port=port, debug=True)
