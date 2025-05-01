@@ -12,12 +12,11 @@ logging.basicConfig(
     ]
 )
 
-# Make sure app is available for Gunicorn
+# Simplify the approach for Render
 port = int(os.environ.get("PORT", 10000))
-logging.info(f"Application configured to run on port {port}")
-print(f"RENDER PORT CONFIGURATION: {port}", file=sys.stderr)
+logging.info(f"USA Army Dashboard ready on port {port}")
 
-# Make this file available for rendering
+# Make this file available for Gunicorn
 if __name__ == "__main__":
-    # Run the application
+    # Run the app directly when executed
     app.run(host='0.0.0.0', port=port, debug=True)
