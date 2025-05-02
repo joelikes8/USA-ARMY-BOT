@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Discord Bot Dashboard - Verifications{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Verified Roblox Accounts</h5>
+            </div>
+            <div class="card-body">
+                {% if verifications %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Discord User</th>
+                                <th>Roblox Username</th>
+                                <th>Roblox Profile</th>
+                                <th>Verified At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for verification in verifications %}
+                            <tr>
+                                <td>{{ verification.id }}</td>
+                                <td>{{ verification.discord_name }}</td>
+                                <td>{{ verification.roblox_username }}</td>
+                                <td>
+                                    <a href="https://www.roblox.com/users/{{ verification.roblox_id }}/profile" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                        View Profile
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if verification.verified_at %}
+                                    {{ verification.verified_at.strftime('%Y-%m-%d %H:%M') }}
+                                    {% else %}
+                                    Unknown
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">No verified users yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Verification Process</h5>
+            </div>
+            <div class="card-body">
+                <p>Discord users can verify their Roblox accounts by following these steps:</p>
+                <ol>
+                    <li>Use the <code>/verify</code> command in Discord with your Roblox username</li>
+                    <li>Add the provided verification code to your Roblox profile description</li>
+                    <li>Use the <code>/check</code> command to complete verification</li>
+                </ol>
+                <p>Once verified, users can use <code>/whois</code> to check verification status.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
