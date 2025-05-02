@@ -1,0 +1,101 @@
+/* Custom CSS styles for the Discord Bot Dashboard */
+
+/* Discord embed styling */
+.discord-embed {
+    background-color: rgba(47, 49, 54, 0.6);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.discord-embed-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.discord-embed-text {
+    margin-bottom: 10px;
+}
+
+.discord-embed-media {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    max-width: 400px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.discord-embed-media img {
+    max-width: 100%;
+    height: auto;
+}
+
+.discord-embed-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom badge colors */
+.badge.bg-red {
+    background-color: #ED4245 !important;
+}
+
+.badge.bg-blue {
+    background-color: #5865F2 !important;
+}
+
+.badge.bg-green {
+    background-color: #57F287 !important;
+}
+
+.badge.bg-purple {
+    background-color: #9B59B6 !important;
+}
+
+.badge.bg-black {
+    background-color: #23272A !important;
+}
+
+/* Table improvements */
+.table-responsive {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+/* Add some breathing room */
+body {
+    padding-bottom: 2rem;
+}
+
+/* Custom button styles */
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Code styling */
+code {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
