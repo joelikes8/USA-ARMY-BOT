@@ -5,8 +5,13 @@ Sets up the Discord bot with necessary configurations.
 import os
 import logging
 import discord
+import sys
+import time
 from discord.ext import commands
 from dotenv import load_dotenv
+
+# Import the bot status module
+import bot_status
 
 # Load environment variables
 load_dotenv()
@@ -47,6 +52,9 @@ async def on_ready():
         logger.info(f"Synced {len(synced)} command(s)")
     except Exception as e:
         logger.error(f"Failed to sync commands: {e}")
+        
+    # Update bot status
+    bot_status.update_status(connected=True, discord_username=bot.user.name)
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -62,6 +70,9 @@ async def on_disconnect():
     """Event triggered when the bot disconnects from Discord."""
     logger.warning("Bot has disconnected from Discord. Attempting to reconnect...")
     print("ALERT: Bot disconnected from Discord. Auto-reconnect initiated...", flush=True)
+    
+    # Update bot status
+    bot_status.update_status(connected=False)
 
 @bot.event
 async def on_resumed():
@@ -69,11 +80,18 @@ async def on_resumed():
     logger.info("Bot has successfully reconnected to Discord")
     print("STATUS: Bot successfully reconnected to Discord", flush=True)
     
+    # Update bot status
+    if bot.user:
+        bot_status.update_status(connected=True, discord_username=bot.user.name)
+    
 @bot.event
 async def on_connect():
     """Event triggered when the bot connects to Discord (before ready)."""
     logger.info("Bot connected to Discord gateway")
     print("STATUS: Bot connected to Discord gateway", flush=True)
+    
+    # Update bot status
+    bot_status.update_status(connected=True)
 
 def run():
     """Run the bot with the token and auto-reconnect on failures."""
@@ -91,12 +109,17 @@ def run():
     reconnect_attempts = 0
     reconnect_delay = _reconnect_delay
     
+    # Initialize bot status
+    bot_status.update_status(connected=False, reconnect_count=reconnect_attempts)
+    
     while True:
         try:
             # Start the bot with reconnect=True to enable Discord's built-in reconnection
             bot.run(token, reconnect=True)
             # If run() completes normally, we've exited the bot loop deliberately
             logger.info("Bot has shut down normally")
+            # Update status to reflect shutdown
+            bot_status.update_status(connected=False)
             # Exit the loop as this was a normal shutdown
             break
         except (discord.ConnectionClosed, discord.GatewayNotFound, 
@@ -106,10 +129,15 @@ def run():
                 # If the token is invalid, no point retrying
                 logger.critical(f"Invalid token provided. Please check your Discord token: {e}")
                 print(f"CRITICAL ERROR: Invalid Discord token: {e}", flush=True)
+                # Update status to reflect invalid token
+                bot_status.update_status(connected=False)
                 break
                 
             # Increment reconnection attempts
             reconnect_attempts += 1
+            
+            # Update status
+            bot_status.update_status(connected=False, reconnect_count=reconnect_attempts)
             
             # If we've exceeded the maximum attempts, stop trying
             if reconnect_attempts > _max_reconnect_attempts:
@@ -122,7 +150,6 @@ def run():
             print(f"CONNECTION ERROR: {e} - Reconnecting in {reconnect_delay} seconds...", flush=True)
             
             # Wait before retrying with exponential backoff
-            import time
             time.sleep(reconnect_delay)
             
             # Increase the delay for the next attempt (exponential backoff)
@@ -132,6 +159,8 @@ def run():
             # Log unexpected errors
             logger.critical(f"Unexpected error: {e}")
             print(f"CRITICAL ERROR: Bot failed with unexpected error: {e}", flush=True)
+            # Update status to reflect error
+            bot_status.update_status(connected=False)
             import traceback
             traceback.print_exc()
             break
