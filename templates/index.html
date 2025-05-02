@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Discord Bot Dashboard - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Discord Bot Dashboard</h1>
+                <p class="card-text">Welcome to the Discord Bot Dashboard! This dashboard provides an overview of the bot's activity and data.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Announcements</h5>
+            </div>
+            <div class="card-body">
+                <p>The bot can create and send formatted announcements to Discord channels.</p>
+                <p>Features:</p>
+                <ul>
+                    <li>Formatted embeds with customizable colors</li>
+                    <li>Support for images and Google Drive links</li>
+                    <li>Command history stored in database</li>
+                </ul>
+                <div class="text-end">
+                    <a href="/announcements" class="btn btn-outline-primary">View Announcements</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Roblox Verification</h5>
+            </div>
+            <div class="card-body">
+                <p>The bot can verify Discord users with their Roblox accounts.</p>
+                <p>Features:</p>
+                <ul>
+                    <li>Secure verification codes</li>
+                    <li>Link Discord account to Roblox profile</li>
+                    <li>Check verification status with <code>/whois</code></li>
+                </ul>
+                <div class="text-end">
+                    <a href="/verifications" class="btn btn-outline-success">View Verifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Additional JavaScript can be added here if needed
+    });
+</script>
+{% endblock %}
