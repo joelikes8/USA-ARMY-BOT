@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Discord Bot Dashboard - Announcements{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Announcements History</h5>
+            </div>
+            <div class="card-body">
+                {% if announcements %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Author</th>
+                                <th>Channel</th>
+                                <th>Message</th>
+                                <th>Color</th>
+                                <th>Media</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for announcement in announcements %}
+                            <tr>
+                                <td>{{ announcement.id }}</td>
+                                <td>{{ announcement.author_name }}</td>
+                                <td>{{ announcement.channel_name }}</td>
+                                <td>
+                                    {% if announcement.message|length > 50 %}
+                                    {{ announcement.message[:50] }}...
+                                    {% else %}
+                                    {{ announcement.message }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill bg-{{ announcement.color }}">{{ announcement.color }}</span>
+                                </td>
+                                <td>
+                                    {% if announcement.media_url %}
+                                    <a href="{{ announcement.media_url }}" target="_blank">View</a>
+                                    {% else %}
+                                    None
+                                    {% endif %}
+                                </td>
+                                <td>{{ announcement.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">No announcements have been made yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if announcements %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Recent Announcement Preview</h5>
+            </div>
+            <div class="card-body">
+                {% set recent = announcements[0] %}
+                <div class="discord-embed" style="border-left: 4px solid var(--bs-{{ recent.color }})">
+                    <div class="discord-embed-content">
+                        <div class="discord-embed-text">
+                            <p>{{ recent.message }}</p>
+                        </div>
+                        {% if recent.media_url %}
+                        <div class="discord-embed-media">
+                            <img src="{{ recent.media_url }}" alt="Announcement media" class="img-fluid rounded">
+                        </div>
+                        {% endif %}
+                        <div class="discord-embed-footer">
+                            <small class="text-muted">Posted by {{ recent.author_name }} in #{{ recent.channel_name }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .discord-embed {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .discord-embed-media {
+        margin-top: 10px;
+        max-width: 400px;
+    }
+    
+    .discord-embed-footer {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}
